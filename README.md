@@ -12,9 +12,6 @@ Support Vector Machine in Javascript
 
 `npm install ml-svm`
 
-## How to use it
-
-
 ## Test
 
 ```js
