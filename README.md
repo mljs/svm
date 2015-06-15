@@ -1,10 +1,11 @@
 # ml-svm
-Support Vector Machine in Javascript
 
   [![NPM version][npm-image]][npm-url]
   [![build status][travis-image]][travis-url]
   [![David deps][david-image]][david-url]
   [![npm download][download-image]][download-url]
+  
+Support Vector Machine in Javascript
 
 ## Installation
 
