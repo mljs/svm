@@ -6,8 +6,6 @@ Support Vector Machine in Javascript
   [![David deps][david-image]][david-url]
   [![npm download][download-image]][download-url]
 
-Support Vector Machine in Javascript
-
 ## Installation
 
 `npm install ml-svm`
