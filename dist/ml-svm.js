@@ -1,3 +1,70 @@
+/**
+ * ml-svm - Support Vector Machine in Javascript
+ * @version v1.0.1
+ * @link https://github.com/mljs/svm
+ * @license MIT
+ */
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.mlSvm=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+exports.svm = require('./svm');
+exports.kernel = require('./kernel');
+},{"./kernel":2,"./svm":3}],2:[function(require,module,exports){
+'use strict';
+
+/**
+ * Kernel function to return the dot product for different spaces
+ * @param {Array <number>} x1 - input first vector
+ * @param {Array <number>} x2 - input second vector
+ * @param {string} func - the kind of transformation
+ * @param {number} par - parameter used in the polynomial and the radial function
+ * @return {number} calculus of the dot product using the function
+ * */
+function kernel(x1,x2,func,par) {
+    func = (typeof func === 'undefined') ? 'lineal' : func;
+    par = (typeof par === 'undefined') ? 2 : par;
+
+    var p = dot(x1,x2);
+    if (func === 'lineal'){
+        return p;
+    }
+    else if(func === 'polynomial') {
+        return Math.pow((p + 1), par);
+    }
+    else if(func === 'radial') {
+        var l = x1.length;
+        var rest = new Array(l);
+        for (var i = 0; i < l; i++) {
+            rest[i] = x1[i] - x2[i];
+        }
+        var norm = dot(rest, rest);
+        return Math.exp((norm)/(-2*par*par));
+    }
+    else {
+        throw new TypeError('Function kernel undefined');
+    }
+}
+
+/**
+ * The dot product between the p1 and p2 vectors
+ * @param {Array <number>} p1 - first vector to get dot product
+ * @param {Array <number>} p2 - second vector to get dot product
+ * @returns {number} dot product between the p1 and p2 vectors
+ */
+function dot(p1, p2) {
+    if (p1.length !== p2.length) {
+        throw new TypeError('Arrays should have the same length');
+    }
+    var l = p1.length;
+    var prod = 0;
+
+    for (var i = 0; i < l; i++) {
+        prod += p1[i] * p2[i];
+    }
+
+    return prod;
+}
+
+module.exports = kernel;
+},{}],3:[function(require,module,exports){
 'use strict';
 var kernel = require("./kernel");
 
@@ -225,3 +292,5 @@ SVM.prototype.predict = function (p) {
 };
 
 module.exports = SVM;
+},{"./kernel":2}]},{},[1])(1)
+});
