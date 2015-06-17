@@ -1,4 +1,4 @@
-var SVM = require('../src/svm.js');
+var SVM = require('..');
 
 var X = [[0, 1], [4, 6], [2,0]];
 var Y = [-1,1,-1];

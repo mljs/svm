@@ -1,6 +1,6 @@
 'use strict';
 
-var kernel = require('../src/kernel.js');
+var kernel = require('..').kernel;
 
 var v1 = [0, 1, 4, 6, 2];
 var v2 = [0, 2, 5, 6, 7];
