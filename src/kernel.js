@@ -9,28 +9,7 @@
  * @return {number} calculus of the dot product using the function
  * */
 function kernel(x1,x2,func,par) {
-    func = (typeof func === 'undefined') ? 'lineal' : func;
-    par = (typeof par === 'undefined') ? 2 : par;
-
-    var p = dot(x1,x2);
-    if (func === 'lineal'){
-        return p;
-    }
-    else if(func === 'polynomial') {
-        return Math.pow((p + 1), par);
-    }
-    else if(func === 'radial') {
-        var l = x1.length;
-        var rest = new Array(l);
-        for (var i = 0; i < l; i++) {
-            rest[i] = x1[i] - x2[i];
-        }
-        var norm = dot(rest, rest);
-        return Math.exp((norm)/(-2*par*par));
-    }
-    else {
-        throw new TypeError('Function kernel undefined');
-    }
+    return getKernel(func)(x1, x2, par);
 }
 
 /**
@@ -53,4 +32,45 @@ function dot(p1, p2) {
     return prod;
 }
 
-module.exports = kernel;
+function getKernel(func) {
+    func = (typeof func === 'undefined') ? 'lineal' : func;
+
+    switch(func) {
+        case 'lineal':
+            return kernelLineal;
+        case 'polynomial':
+            return kernelPolynomial;
+        case 'radial':
+            return kernelRadial;
+        default:
+            throw new TypeError('Function kernel undefined: ' + func);
+    }
+}
+
+function kernelLineal(x1,x2) {
+    return dot(x1,x2);
+}
+
+function kernelPolynomial(x1, x2, par) {
+    par = (typeof par === 'undefined') ? 2 : par;
+    return Math.pow((dot(x1, x2) + 1), par);
+}
+
+function kernelRadial(x1, x2, par) {
+    par = (typeof par === 'undefined') ? 2 : par;
+    var l = x1.length;
+    var rest = new Array(l);
+    for (var i = 0; i < l; i++) {
+        rest[i] = x1[i] - x2[i];
+    }
+    var norm = dot(rest, rest);
+    return Math.exp((norm)/(-2*par*par));
+}
+
+module.exports = {
+    kernel: kernel,
+    getKernel: getKernel,
+    lineal : kernelLineal,
+    polynomial : kernelPolynomial,
+    radial : kernelRadial
+};

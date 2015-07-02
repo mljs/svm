@@ -1,5 +1,6 @@
 'use strict';
-var kernel = require("./kernel");
+var kernel = require("./kernel").kernel;
+var getKernel = require("./kernel").getKernel;
 
 /**
  * Parameters to implement function
@@ -32,11 +33,11 @@ var defaultOptions = {
  * of the kernel
  * @returns {number}
  */
-function f(x, X, Y, alpha, b, k, par) {
+function f(x, X, Y, alpha, b, kernel, par) {
     var m = X.length;
     var aux = b;
     for (var i = 0; i < m; i++) {
-        b += alpha[i]*Y[i]*kernel(X[i],x, k, par)
+        b += alpha[i]*Y[i]*kernel(X[i],x, par)
     }
     return aux;
 }
@@ -57,6 +58,7 @@ function SVM(options) {
             this.options[o] = defaultOptions[o];
         }
     }
+    this.kernel = getKernel(this.options.k);
     this.b = 0;
 }
 
@@ -87,14 +89,14 @@ SVM.prototype.train = function (X, Y) {
     while (iter < this.options.max_passes) {
         var numChange = 0;
         for (var i = 0; i < m; i++) {
-            Ei = f(X[i],X,Y,alpha,b,this.options.k,this.options.par) - Y[i];
+            Ei = f(X[i],X,Y,alpha,b,this.kernel,this.options.par) - Y[i];
             if (((Y[i]*Ei < -this.options.tol) && (alpha[i] < this.options.C)) || ((Y[i]*Ei > this.options.tol) && (alpha[i] > 0))) {
                 var j = 0;
                 do {
                     j = Math.ceil(Math.random()*(m - 1));
                 }
                 while (j === i);
-                Ej = f(X[j],X,Y,alpha,b,this.options.k,this.options.par) - Y[j];
+                Ej = f(X[j],X,Y,alpha,b,this.kernel,this.options.par) - Y[j];
                 ai = alpha[i];
                 aj = alpha[j];
                 if (Y[i] === Y[j]) {
@@ -106,7 +108,7 @@ SVM.prototype.train = function (X, Y) {
                     H = Math.min(this.options.C, this.options.C-ai+aj);
                 }
                 if (L !== H) {
-                    eta = 2*kernel(X[i],X[j], this.options.k, this.options.par) - kernel(X[i],X[i], this.options.k, this.options.par) - kernel(X[j],X[j], this.options.k, this.options.par);
+                    eta = 2*this.kernel(X[i],X[j], this.options.par) - this.kernel(X[i],X[i], this.options.par) - this.kernel(X[j],X[j], this.options.par);
                     if (eta < 0) {
                         alpha[j] = alpha[j] - (Y[j]*(Ei - Ej)) / eta;
                         if (alpha[j] > H)
@@ -115,8 +117,8 @@ SVM.prototype.train = function (X, Y) {
                             alpha[j] = L;
                         if (Math.abs(aj - alpha[j]) >= 10e-5) {
                             alpha[i] = alpha[i] + Y[i]*Y[j]*(aj - alpha[j]);
-                            b1 = b - Ei - Y[i]*(alpha[i] - ai)*kernel(X[i],X[i], this.options.k, this.options.par) - Y[j]*(alpha[j] - aj)*kernel(X[i],X[j], this.options.k, this.options.par);
-                            b2 = b - Ej - Y[i]*(alpha[i] - ai)*kernel(X[i],X[j], this.options.k, this.options.par) - Y[j]*(alpha[j] - aj)*kernel(X[j],X[j], this.options.k, this.options.par);
+                            b1 = b - Ei - Y[i]*(alpha[i] - ai)*this.kernel(X[i],X[i], this.options.par) - Y[j]*(alpha[j] - aj)*this.kernel(X[i],X[j], this.options.par);
+                            b2 = b - Ej - Y[i]*(alpha[i] - ai)*this.kernel(X[i],X[j], this.options.par) - Y[j]*(alpha[j] - aj)*this.kernel(X[j],X[j], this.options.par);
                             if ((alpha[i] < this.options.C) && (alpha[i] > 0))
                                 b = b1;
                             else if ((alpha[j] < this.options.C) && (alpha[j] > 0))
