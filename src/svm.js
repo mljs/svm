@@ -3,20 +3,20 @@ const Kernel = require('ml-kernel');
 
 /**
  * Parameters to implement function
- * @type {{C: number, tol: number, max_passes: number, par: number, kernel: string}}
+ * @type {{C: number, tol: number, maxPasses: number, par: number, kernel: string}}
  * @param {number} C - regularization parameter
  * @param {number} tol - numerical tolerance
- * @param {number} max_passes - max number of times to iterate over alphas without
+ * @param {number} maxPasses - max number of times to iterate over alphas without
  * changing
  * @param {string} kernel - the kind of kernel
  * @param {number} par - parameter used in the polynomial and the radial function
  * of the kernel
  */
 var defaultOptions = {
-    C: 10,
+    C: 1,
     tol: 10e-2,
-    max_passes: 10,
-    par: 2,
+    maxPasses: 1e-4,
+    maxIterations: 10000,
     kernel: 'linear'
 };
 
@@ -57,6 +57,7 @@ SVM.prototype.train = function (X, Y) {
     var b1 = 0,
         b2 = 0,
         iter = 0,
+        passes = 0,
         Ei = 0,
         Ej = 0,
         ai = 0,
@@ -65,7 +66,8 @@ SVM.prototype.train = function (X, Y) {
         H = 0,
         eta = 0;
 
-    while (iter < this.options.max_passes) {
+    console.log(this.options.maxIterations);
+    while (passes < this.options.maxPasses && iter < this.options.maxIterations) {
         var numChange = 0;
         for (var i = 0; i < m; i++) {
             Ei = this.marginOne(X[i]) - Y[i];
@@ -104,10 +106,11 @@ SVM.prototype.train = function (X, Y) {
                 numChange += 1;
             }
         }
+        iter++;
         if (numChange == 0)
-            iter += 1;
+            passes += 1;
         else
-            iter = 0;
+            passes = 0;
     }
     var s = X[0].length;
     this.W = new Array(s);
