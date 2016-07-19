@@ -17,9 +17,11 @@ labels = labels.map(label => {
 // var labels = [-1, 1];
 
 const result = CV.leaveOneOut(SVM, features, labels, {
-    k: 'linear',
+    kernel: 'rbf',
     C: 1,
-    par: 1
+    kernelOptions: {
+        sigma: 0.5
+    }
 });
 console.log(result);
 

@@ -66,7 +66,6 @@ SVM.prototype.train = function (X, Y) {
         H = 0,
         eta = 0;
 
-    console.log(this.options.maxIterations);
     while (passes < this.options.maxPasses && iter < this.options.maxIterations) {
         var numChange = 0;
         for (var i = 0; i < m; i++) {
@@ -111,6 +110,9 @@ SVM.prototype.train = function (X, Y) {
             passes += 1;
         else
             passes = 0;
+    }
+    if(iter === this.options.maxIterations) {
+        console.warn('max iterations reached');
     }
     var s = X[0].length;
     this.W = new Array(s);

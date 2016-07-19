@@ -18,7 +18,10 @@ describe('SVM', function () {
 
     it('solve xor with rbf', function () {
         var svm = new SVM({
-            kernel: 'rbf'
+            kernel: 'rbf',
+            kernelOptions: {
+                sigma: 0.5
+            }
         });
         var features = [[0,0],[0,1],[1,1],[1,0]];
         var labels = [1, -1, 1, -1];

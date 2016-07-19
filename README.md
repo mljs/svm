@@ -40,9 +40,8 @@ __Example__
 ```js
 var SVM = require('ml-svm');
 
-// actually this are the default values
 var options = {
-  C: 10,
+  C: 1,
   tol: 10e-2,
   max_passes: 100,
   par: 2,
