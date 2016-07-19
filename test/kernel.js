@@ -9,7 +9,7 @@ describe('kernel test', function () {
 
     it('no change product', function () {
         kernel(v1,v2).should.equal(72);
-        kernel(v1,v2,"lineal").should.equal(72);
+        kernel(v1,v2,"linear").should.equal(72);
     });
 
     it('polynomial product', function () {

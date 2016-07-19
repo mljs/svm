@@ -30,11 +30,11 @@ function dot(p1, p2) {
 }
 
 function getKernel(func) {
-    func = (typeof func === 'undefined') ? 'lineal' : func;
+    func = (typeof func === 'undefined') ? 'linear' : func;
 
     switch(func) {
-        case 'lineal':
-            return kernelLineal;
+        case 'linear':
+            return kernellinear;
         case 'polynomial':
             return kernelPolynomial;
         case 'radial':
@@ -44,7 +44,7 @@ function getKernel(func) {
     }
 }
 
-function kernelLineal(x1,x2) {
+function kernellinear(x1,x2) {
     return dot(x1,x2);
 }
 
@@ -67,7 +67,7 @@ function kernelRadial(x1, x2, par) {
 module.exports = {
     kernel: kernel,
     getKernel: getKernel,
-    lineal : kernelLineal,
+    linear : kernellinear,
     polynomial : kernelPolynomial,
     radial : kernelRadial
 };

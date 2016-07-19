@@ -18,7 +18,7 @@ var defaultOptions = {
     tol: 10e-2,
     max_passes: 10,
     par: 2,
-    k: 'lineal'
+    k: 'linear'
 };
 
 /**

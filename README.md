@@ -32,7 +32,7 @@ __Options__
 * `C` - regularization parameter
 * `tol` - numerical tolerance
 * `max_passes` - max number of times to iterate over alphas without changing
-* `k` - the kind of kernel, it could be `lineal`, `polynomial` or `radial`
+* `k` - the kind of kernel, it could be `linear`, `polynomial` or `radial`
 * `par` - parameter used in the polynomial and the radial function of the kernel
 
 __Example__
@@ -46,7 +46,7 @@ var options = {
   tol: 10e-2,
   max_passes: 100,
   par: 2,
-  k: 'lineal'
+  k: 'linear'
 };
 
 var svm = new SVM(options);
