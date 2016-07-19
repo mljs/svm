@@ -36,5 +36,8 @@
     "mocha": "latest",
     "mocha-better-spec-reporter": "latest",
     "should": "latest"
+  },
+  "dependencies": {
+    "ml-kernel": "^2.2.0"
   }
 }
