@@ -8,8 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --require should --reporter mocha-better-spec-reporter --recursive",
-    "build": "cheminfo build"
+    "test": "mocha --require should --reporter mocha-better-spec-reporter --recursive"
   },
   "repository": {
     "type": "git",
@@ -32,7 +31,6 @@
   },
   "homepage": "https://github.com/mljs/svm",
   "devDependencies": {
-    "cheminfo-tools": "^1.7.0",
     "mocha": "latest",
     "mocha-better-spec-reporter": "latest",
     "should": "latest"
