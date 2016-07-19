@@ -1,7 +1,6 @@
 'use strict';
 var kernel = require("./kernel").kernel;
 var getKernel = require("./kernel").getKernel;
-var rng = require('seedrandom')('123');
 
 /**
  * Parameters to implement function
@@ -222,7 +221,7 @@ SVM.prototype.predict = function (p) {
 };
 
 function randi(a, b) {
-    return Math.floor(rng()*(b-a)+a);
+    return Math.floor(Math.random()*(b-a)+a);
 }
 
 module.exports = SVM;
