@@ -1,6 +1,6 @@
 'use strict';
 const Kernel = require('ml-kernel');
-const rng = require('seedrandom')('123');
+
 /**
  * Parameters to implement function
  * @type {{C: number, tol: number, max_passes: number, par: number, kernel: string}}
@@ -21,30 +21,9 @@ var defaultOptions = {
 };
 
 /**
- * Function to calculate the estimated prediction
- * @param {Array <number>} x - point where calculate the function prediction
- * @param {Array <Array <number>>} X - training data point in the form (x1, x2)
- * @param {Array <number>} Y - training data labels in the domain {1,-1}
- * @param {Array <number>} alpha - Lagrange multipliers
- * @param {number} b - threshold of the function
- * @param {string} kernel - the kind of kernel
- * @param {number} par - parameter used in the polynomial and the radial function
- * of the kernel
- * @returns {number}
- */
-function f(index, Y, alpha, b, kernel) {
-    var m = Y.length;
-    var aux = b;
-    for (var i = 0; i < m; i++) {
-        aux += alpha[i]*Y[i]*kernel[i][index];
-    }
-    return aux;
-}
-
-/**
  * Simplified version of the Sequential Minimal Optimization algorithm for training
  * support vector machines
- * @param {{json}} options - parameters to implement function
+ * @param {{Object}} options - parameters to implement function
  * @constructor
  */
 function SVM(options) {
@@ -232,7 +211,7 @@ SVM.prototype.predictOne = function(p) {
 };
 
 function randi(a, b) {
-    return Math.floor(rng()*(b-a)+a);
+    return Math.floor(Math.random()*(b-a)+a);
 }
 
 module.exports = SVM;
