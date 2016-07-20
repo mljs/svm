@@ -1,31 +1,66 @@
 'use strict';
 var SVM = require('..');
-
-var X = [[0, 1], [4, 6], [2,0]];
-var Y = [-1,1,-1];
-
+var data = {
+    linear: {
+        features: [[0, -2], [4, 6], [2,0]],
+        labels: [-1,1,-1]
+    },
+    xor: {
+        features: [[0,0],[0,1],[1,1],[1,0]],
+        labels: [1, -1, 1, -1]
+    }
+};
 describe('SVM', function () {
 
-    it('test train, predict, export and load', function () {
-        var mySvm = new SVM({tol: 0.01});
-        mySvm.train(X, Y);
-        mySvm.predict([2,6]).should.equal(1);
-        mySvm.predict([[2,6]])[0].should.equal(1);
-        var exp = mySvm.export();
-        var reloadedSvm = SVM.load(exp);
-        reloadedSvm.predict([2,6]).should.equal(1);
+    it('should solve a linearly separable case', function () {
+        var features = data.linear.features;
+        var labels = data.linear.labels;
+        var svm = new SVM();
+        svm.train(features, labels);
+        svm.predict(features).should.eql(labels);
+        svm.predict(features[0]).should.eql(labels[0]);
+        // Linearly separable case = 1 support vector for each of the two classes
+        svm.getSupportVectors().should.eql([features[1], features[2]]);
     });
 
-    it('solve xor with rbf', function () {
+    it('should reload the linear model', function () {
+        var features = [[0, 1], [4, 6], [2,0]];
+        var labels = [-1,1,-1];
+        var svm = new SVM();
+        svm.train(features, labels);
+        var exp = svm.export();
+        var reloadedSvm = SVM.load(exp);
+        reloadedSvm.predict(features).should.eql(labels);
+        (function() {
+            reloadedSvm.getSupportVectors();
+        }).should.throw(/Cannot get support vectors from saved linear model/)
+    });
+
+    it('should solve xor with rbf', function () {
         var svm = new SVM({
             kernel: 'rbf',
             kernelOptions: {
                 sigma: 0.5
             }
         });
-        var features = [[0,0],[0,1],[1,1],[1,0]];
-        var labels = [1, -1, 1, -1];
+        var features = data.xor.features;
+        var labels = data.xor.labels;
         svm.train(features, labels);
-        svm.predict([[0,0],[0,1],[1,1],[1,0]]).should.deepEqual(labels);
+        svm.predict(features).should.eql(labels);
     });
+
+    it('should solve xor with reloaded model', function () {
+        var svm = new SVM({
+            kernel: 'rbf',
+            kernelOptions: {
+                sigma: 0.5
+            }
+        });
+        var features = data.xor.features;
+        var labels = data.xor.labels;
+        svm.train(features, labels);
+        var model = svm.export();
+        var reloadedSvm = SVM.load(model);
+        reloadedSvm.predict(features).should.eql(labels);
+    })
 });

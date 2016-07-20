@@ -14,10 +14,11 @@ const Kernel = require('ml-kernel');
  */
 var defaultOptions = {
     C: 1,
-    tol: 10e-2,
-    maxPasses: 1e-4,
+    tol: 1e-4,
+    maxPasses: 10,
     maxIterations: 10000,
-    kernel: 'linear'
+    kernel: 'linear',
+    alphaTol: 1e-6
 };
 
 /**
@@ -29,16 +30,18 @@ var defaultOptions = {
 function SVM(options) {
     this.options = Object.assign({}, defaultOptions, options);
 
-    this.kernel = new Kernel(this.options.kernel, options.kernelOptions);
+    this.kernel = new Kernel(this.options.kernel, this.options.kernelOptions);
     this.b = 0;
 }
 
 /**
- * Train the SVM model
+ * you need to train the SVM model
  * @param {Array <Array <number>>} X - training data point in the form (x1, x2)
  * @param {Array <number>} Y - training data labels in the domain {1,-1}
  */
 SVM.prototype.train = function (X, Y) {
+    this._trained = false;
+    this._loaded = false;
     this.N = Y.length;
     this.D = X[0].length;
     this.X = X;
@@ -114,13 +117,42 @@ SVM.prototype.train = function (X, Y) {
     if(iter === this.options.maxIterations) {
         console.warn('max iterations reached');
     }
-    var s = X[0].length;
-    this.W = new Array(s);
-    for (var r = 0; r < s; r++) {
-        this.W[r] = 0;
-        for (var w = 0; w < m; w++)
-            this.W[r] += Y[w]*alpha[w]*X[w][r];
+
+    // Compute the weights (useful for fast decision on new test instances when linear SVM)
+    if(this.options.kernel === 'linear') {
+        this.W = new Array(this.D);
+        for (var r = 0; r < this.D; r++) {
+            this.W[r] = 0;
+            for (var w = 0; w < m; w++)
+                this.W[r] += Y[w]*alpha[w]*X[w][r];
+        }
     }
+
+    // Keep only support vectors
+    // It will compute decision on new test instances faster
+    // We also keep the index of the support vectors
+    // in the original data
+    var nX = [];
+    var nY = [];
+    var nAlphas = [];
+    this._supportVectorIdx = [];
+    for(i=0; i<this.N; i++) {
+        if(this.alphas[i] > this.options.alphaTol) {
+            nX.push(X[i]);
+            nY.push(Y[i]);
+            nAlphas.push(this.alphas[i]);
+            this._supportVectorIdx.push(i);
+
+        }
+    }
+    this.X = nX;
+    this.Y = nY;
+    this.N = nX.length;
+    this.alphas = nAlphas;
+
+
+    // A flag to say this SVM has been trained
+    this._trained = true;
 };
 
 /**
@@ -129,47 +161,45 @@ SVM.prototype.train = function (X, Y) {
  * @returns {SVM}
  */
 SVM.load = function (model) {
-    if (model.name === 'SVM') {
-        var svm = new SVM(model.options);
+    this._loaded = true;
+    this._trained = false;
+    var svm = new SVM(model.options);
+    if(model.options.kernel === 'linear') {
         svm.W = model.W.slice();
-        svm.b = model.b;
-        return svm;
+        svm.D = svm.W.length;
     } else {
-        throw new TypeError('expecting a SVM model');
+        svm.X = model.X.slice();
+        svm.Y = model.Y.slice();
+        svm.alphas = model.alphas.slice();
+        svm.N = svm.X.length;
+        svm.D = svm.X[0].length;
     }
+    svm.b = model.b;
+    svm._loaded = true;
+    svm._trained = false;
+    return svm;
 };
 
 /**
- * Let's have a JSON to recreate the model
- * @returns {{name: String("SVM"), ,options: {json} ,alpha: Array<number>, b: number}}
- * name identifier, options to recreate model, the Lagrange multipliers and the
- * threshold of the objective function
+ * Export the minimal object that enables to reload the model
+ * @returns Object
  */
 SVM.prototype.export = function () {
-    var model = {
-        name: 'SVM'
-    };
-    model.options = this.options;
-    model.W = this.W;
+    if(!this._trained && !this._loaded) throw new Error('Cannot export, you need to train the SVM first');
+    var model = {};
+    model.options = Object.assign({}, this.options);
     model.b = this.b;
+    if(model.options.kernel === 'linear') {
+        model.W = this.W.slice();
+    } else {
+        // Exporting non-linear models is heavier
+        model.X = this.X.slice();
+        model.Y = this.Y.slice();
+        model.alphas = this.alphas.slice();
+    }
     return model;
 };
 
-/**
- * Return the Lagrange multipliers
- * @returns {Array <number>}
- */
-SVM.prototype.getAlphas = function () {
-    return this.alphas.slice();
-};
-
-/**
- * Returns the threshold of the model function
- * @returns {number} threshold of the function
- */
-SVM.prototype.getThreshold = function () {
-    return this.b;
-};
 
 /**
  * Use the train model to make predictions
@@ -177,6 +207,7 @@ SVM.prototype.getThreshold = function () {
  * @returns {*} An array or a single {-1, 1} value of the prediction
  */
 SVM.prototype.predict = function (p) {
+    if(!this._trained && !this._loaded) throw new Error('Cannot predict, you need to train the SVM first');
     if(Array.isArray(p) && Array.isArray(p[0])) {
         return p.map(this.predictOne.bind(this));
     } else {
@@ -192,16 +223,22 @@ SVM.prototype.margin = function(p) {
     }
 };
 
+SVM.prototype.getSupportVectors = function() {
+    if(!this._trained && !this._loaded) throw new Error('Cannot get support vectors, you need to train the SVM first');
+    if(this._loaded && this.options.kernel === 'linear') throw new Error('Cannot get support vectors from saved linear model, you need to train the SVM to have them');
+    return this.X;
+};
+
 
 SVM.prototype.marginOne = function(p) {
-    var ans = this.b;
+    var ans = this.b, i;
     if(this.options.kernel === 'linear' && this.W) {
         // Use weights, it's faster
-        for(var i=0; i<this.W.length; i++) {
+        for(i=0; i<this.W.length; i++) {
             ans += this.W[i] * p[i];
         }
     } else {
-        for(var i=0; i<this.N; i++) {
+        for(i=0; i<this.N; i++) {
             ans += this.alphas[i] * this.Y[i] * this.kernel.compute([p], [this.X[i]])[0][0];
         }
     }
