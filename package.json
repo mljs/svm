@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/mljs/svm",
   "devDependencies": {
+    "ml-xsadd": "^1.0.0",
     "mocha": "latest",
     "mocha-better-spec-reporter": "latest",
     "should": "latest"

@@ -7,7 +7,8 @@ var defaultOptions = {
     maxPasses: 10,
     maxIterations: 10000,
     kernel: 'linear',
-    alphaTol: 1e-6
+    alphaTol: 1e-6,
+    random: Math.random
 };
 
 /**
@@ -20,6 +21,7 @@ var defaultOptions = {
  * @param {Number} [options.maxPasses=10] - max number of times to iterate over alphas without changing
  * @param {Number} [options.maxIterations=10000] - max number of iterations
  * @param {String} [options.kernel=linear] - the kind of kernel. {@link https://github.com/mljs/kernel/tree/1252de5f9012776e6e0eb06c7b434b8631fb21f0 List of kernels}
+ * @param {Function} [options.random=Math.random] - custom random number generator
  * @constructor
  */
 function SVM(options) {
@@ -70,7 +72,7 @@ SVM.prototype.train = function (features, labels) {
             Ei = this.marginOne(features[i]) - labels[i];
             if (((labels[i]*Ei < -this.options.tol) && (alpha[i] < this.options.C)) || ((labels[i]*Ei > this.options.tol) && (alpha[i] > 0))) {
                 var j = i;
-                while(j===i) j=randi(0, m);
+                while(j===i) j=Math.floor(this.options.random()*m);
                 Ej = this.marginOne(features[j]) - labels[j];
                 ai = alpha[i];
                 aj = alpha[j];
@@ -267,10 +269,5 @@ SVM.prototype.toJSON = function () {
     }
     return model;
 };
-
-
-function randi(a, b) {
-    return Math.floor(Math.random()*(b-a)+a);
-}
 
 module.exports = SVM;
