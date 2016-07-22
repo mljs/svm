@@ -11,110 +11,55 @@ Support Vector Machine in Javascript
 
 `npm install ml-svm`
 
-## Test
+## API
+[API documentation](https://mljs.github.io/svm)
+
+## Example
 
 ```js
-$ npm install
-$ npm test
-```
-
-## Methods
-
-### new SVM([options])
-
-Creates a new SVM instance with the given parameters or the default ones.
-
-__Arguments__
-* `options` - Object with options for the algorithm
-
-__Options__
-
-* `C` - regularization parameter
-* `tol` - numerical tolerance
-* `max_passes` - max number of times to iterate over alphas without changing
-* `k` - the kind of kernel, it could be `linear`, `polynomial` or `radial`
-* `par` - parameter used in the polynomial and the radial function of the kernel
-
-__Example__
-
-```js
+// Instantiate the svm classifier
 var SVM = require('ml-svm');
 
 var options = {
-  C: 1,
-  tol: 10e-2,
-  max_passes: 100,
-  par: 2,
-  k: 'linear'
+  C: 0.01,
+  tol: 10e-4,
+  maxPasses: 10,
+  maxIterations: 10000,
+  kernel: 'rbf',
+  kernelOptions: {
+    sigma: 0.5
+  }
 };
 
 var svm = new SVM(options);
+
+// Train the classifier - we give him an xor
+var features = [[0,0],[0,1],[1,1],[1,0]];
+var labels = [1, -1, 1, -1];
+svm.train(features, labels);
+
+// Let's see how narrow the margin is
+var margins = svm.margin(features);
+
+// Let's see if it is separable by testing on the training data
+svm.predict(features); // [1, -1, 1, -1]
+
+// I want to see what my support vectors are
+var supportVectors = svm.supportVectors();
+ 
+// Now we want to save the model for later use
+var model = svm.export();
+
+/// ... later, you can make predictions without retraining the model
+var importedSvm = SVM.load(model);
+importedSvm.predict(features); // [1, -1, 1, -1] 
 ```
 
-### train(X, Y)
-
-Train the SVM with the provided `X` and `Y` training set.
-
-__Arguments__
-
-* `X` - An array of training data point in the form (x1, x2)
-* `Y` - An array of training data labels in the domain {1,-1}
-
-__Example__
-
-```js
-var X = [[0, 1], [4, 6], [2,0]];
-var Y = [-1,1,-1];
-var mySvm = new SVM();
-mySvm.train(X, Y);
-```
-
-### getAlphas()
-
-Returns an array containing the Lagrange multipliers.
-
-### getThreshold()
-
-Returns the threshold of the model function.
-
-### predict([data])
-
-Returns for each data point the predicted label based in the model.
-
-__Arguments__
-
-* `data` - Data point or array of data points.
-
-__Example__
-
-```js
-// creates the SVM
-var mySvm = new SVM({tol: 0.01});
-
-// train the model
-var X = [[0, 1], [4, 6], [2,0]];
-var Y = [-1,1,-1];
-mySvm.train(X, Y);
-
-// here you have the answer
-var ans = mySvm.predict([2,6]);
-```
-
-### export()
-
-Exports the model to a JSON object that can be written to disk and reloaded
-
-### load(model)
-
-Returns a new SVM instance based on the `model`.
-
-__Arguments__
-
-* `model` - JSON object generated with `svm.export()`
 
 ## Authors
 
   - [Miguel Asencio](https://github.com/maasencioh)
+  - [Daniel Kostro](https://github.com/stropitek)
 
 ## License
 
