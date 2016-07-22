@@ -27,7 +27,7 @@ describe('SVM', function () {
         var labels = [-1,1,-1];
         var svm = new SVM();
         svm.train(features, labels);
-        var exp = svm.toJSON();
+        var exp = JSON.parse(JSON.stringify(svm));
         var reloadedSvm = SVM.load(exp);
         reloadedSvm.predict(features).should.eql(labels);
         (function() {
@@ -58,7 +58,7 @@ describe('SVM', function () {
         var features = data.xor.features;
         var labels = data.xor.labels;
         svm.train(features, labels);
-        var model = svm.toJSON();
+        var model = JSON.parse(JSON.stringify(svm));
         var reloadedSvm = SVM.load(model);
         reloadedSvm.predict(features).should.eql(labels);
     })
