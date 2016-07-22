@@ -20,7 +20,7 @@ describe('SVM', function () {
         svm.predict(features).should.eql(labels);
         svm.predict(features[0]).should.eql(labels[0]);
         // Linearly separable case = 1 support vector for each of the two classes
-        svm.getSupportVectors().should.eql([features[1], features[2]]);
+        svm.supportVectors().should.eql([features[1], features[2]]);
     });
 
     it('should reload the linear model', function () {
@@ -32,7 +32,7 @@ describe('SVM', function () {
         var reloadedSvm = SVM.load(exp);
         reloadedSvm.predict(features).should.eql(labels);
         (function() {
-            reloadedSvm.getSupportVectors();
+            reloadedSvm.supportVectors();
         }).should.throw(/Cannot get support vectors from saved linear model/)
     });
 
