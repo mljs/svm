@@ -225,7 +225,7 @@ SVM.prototype.supportVectors = function() {
 
 /**
  * Create a SVM instance from a saved model
- * @param {Object} model -  Object such as returned by a trained SVM instance with {@link #SVM#export export}
+ * @param {Object} model -  Object such as returned by a trained SVM instance with {@link #SVM#toJSON toJSON}
  * @returns {SVM} Instance of svm classifier
  */
 SVM.load = function (model) {
@@ -252,7 +252,7 @@ SVM.load = function (model) {
  * Export the minimal object that enables to reload the model
  * @returns {Object} Model object that can be reused with {@link #SVM.load load}
  */
-SVM.prototype.export = function () {
+SVM.prototype.toJSON = function () {
     if(!this._trained && !this._loaded) throw new Error('Cannot export, you need to train the SVM first');
     var model = {};
     model.options = Object.assign({}, this.options);

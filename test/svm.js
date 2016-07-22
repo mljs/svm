@@ -11,7 +11,6 @@ var data = {
     }
 };
 describe('SVM', function () {
-
     it('should solve a linearly separable case', function () {
         var features = data.linear.features;
         var labels = data.linear.labels;
@@ -28,7 +27,7 @@ describe('SVM', function () {
         var labels = [-1,1,-1];
         var svm = new SVM();
         svm.train(features, labels);
-        var exp = svm.export();
+        var exp = svm.toJSON();
         var reloadedSvm = SVM.load(exp);
         reloadedSvm.predict(features).should.eql(labels);
         (function() {
@@ -59,7 +58,7 @@ describe('SVM', function () {
         var features = data.xor.features;
         var labels = data.xor.labels;
         svm.train(features, labels);
-        var model = svm.export();
+        var model = svm.toJSON();
         var reloadedSvm = SVM.load(model);
         reloadedSvm.predict(features).should.eql(labels);
     })

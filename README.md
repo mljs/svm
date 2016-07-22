@@ -48,7 +48,7 @@ svm.predict(features); // [1, -1, 1, -1]
 var supportVectors = svm.supportVectors();
  
 // Now we want to save the model for later use
-var model = svm.export();
+var model = svm.toJSON();
 
 /// ... later, you can make predictions without retraining the model
 var importedSvm = SVM.load(model);
