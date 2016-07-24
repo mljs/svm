@@ -1,6 +1,6 @@
 {
   "name": "ml-svm",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Support Vector Machine in Javascript",
   "main": "src/svm.js",
   "directories": {
