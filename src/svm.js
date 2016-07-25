@@ -70,7 +70,7 @@ SVM.prototype.train = function (features, labels) {
         var numChange = 0;
         for (var i = 0; i < m; i++) {
             Ei = this.marginOne(features[i]) - labels[i];
-            if (((labels[i]*Ei < -this.options.tol) && (alpha[i] < this.options.C)) || ((labels[i]*Ei > this.options.tol) && (alpha[i] > 0))) {
+            if (labels[i]*Ei < -this.options.tol && alpha[i] < this.options.C || labels[i]*Ei > this.options.tol && alpha[i] > 0) {
                 var j = i;
                 while(j===i) j=Math.floor(this.options.random()*m);
                 Ej = this.marginOne(features[j]) - labels[j];
@@ -88,8 +88,7 @@ SVM.prototype.train = function (features, labels) {
 
                 eta = 2*kernel[i][j] - kernel[i][i] - kernel[j][j];
                 if(eta >=0) continue;
-                var newaj = alpha[j] - (labels[j]*(Ei - Ej)) / eta;
-                alpha[j] = alpha[j] - (labels[j]*(Ei - Ej)) / eta;
+                var newaj = alpha[j] - labels[j] * (Ei - Ej) / eta;
                 if (newaj > H)
                     newaj = H;
                 else if (newaj < L)
