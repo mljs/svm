@@ -22,6 +22,16 @@ var data = {
     }
 };
 describe('SVM', function () {
+    it('should solve a linearly separable case', function () {
+        var features = data.linear1.features;
+        var labels = data.linear1.labels;
+        var svm = new SVM({random});
+        svm.train(features, labels);
+        svm.predict(features).should.eql(labels);
+        svm.predict(features[0]).should.eql(labels[0]);
+        svm.supportVectors().should.eql([1,2])
+    });
+
     it('should reload the linear model', function () {
         var features = data.linear3.features;
         var labels = data.linear3.labels;
@@ -33,15 +43,6 @@ describe('SVM', function () {
         (function() {
             reloadedSvm.supportVectors();
         }).should.throw(/Cannot get support vectors from saved linear model/)
-    });
-
-    it('should solve a linearly separable case', function () {
-        var features = data.linear1.features;
-        var labels = data.linear1.labels;
-        var svm = new SVM({random, whitening: true});
-        svm.train(features, labels);
-        svm.predict(features).should.eql(labels);
-        svm.predict(features[0]).should.eql(labels[0]);
     });
 
     it('should solve a linearly separable case without whitening', function () {

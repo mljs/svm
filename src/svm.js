@@ -244,14 +244,14 @@ SVM.prototype.margin = function (features) {
 };
 
 /**
- * Get support vectors of the trained classifier. WARINNG: this method does not work for svm instances created from
- * {@link #SVM.load load} if linear kernel
- * @returns {Array<Array<Number> >} The support vectors in feature space
+ * Get support vectors indexes of the trained classifier. WARINNG: this method does not work for svm instances
+ * created from {@link #SVM.load load} if linear kernel
+ * @returns {Array<Number>} The indices in the training vector of the support vectors
  */
 SVM.prototype.supportVectors = function () {
     if (!this._trained && !this._loaded) throw new Error('Cannot get support vectors, you need to train the SVM first');
     if (this._loaded && this.options.kernel === 'linear') throw new Error('Cannot get support vectors from saved linear model, you need to train the SVM to have them');
-    return this.X;
+    return this._supportVectorIdx;
 };
 
 /**
