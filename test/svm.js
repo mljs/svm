@@ -5,19 +5,19 @@ var random = new xsadd(0).random;
 
 var data = {
     linear1: {
-        features: [[0, -200], [400, 600], [200,0]],
-        labels: [-1,1,-1]
+        features: [[0, -200], [400, 600], [200, 0]],
+        labels: [-1, 1, -1]
     },
     linear2: {
-        features: [[0, -200], [1, 600], [1/2,0]],
-        labels: [-1,1,-1]
+        features: [[0, -200], [1, 600], [1 / 2, 0]],
+        labels: [-1, 1, -1]
     },
     linear3: {
-        features: [[0, 1], [4, 6], [2,0]],
-        labels: [-1,1,-1]
+        features: [[0, 1], [4, 6], [2, 0]],
+        labels: [-1, 1, -1]
     },
     xor: {
-        features: [[0,0],[0,1],[1,1],[1,0]],
+        features: [[0, 0], [0, 1], [1, 1], [1, 0]],
         labels: [1, -1, 1, -1]
     }
 };
@@ -29,7 +29,7 @@ describe('SVM', function () {
         svm.train(features, labels);
         svm.predict(features).should.eql(labels);
         svm.predict(features[0]).should.eql(labels[0]);
-        svm.supportVectors().should.eql([1,2])
+        svm.supportVectors().should.eql([1, 2]);
     });
 
     it('should reload the linear model', function () {
@@ -40,9 +40,9 @@ describe('SVM', function () {
         var exp = JSON.parse(JSON.stringify(svm));
         var reloadedSvm = SVM.load(exp);
         reloadedSvm.predict(features).should.eql(labels);
-        (function() {
+        (function () {
             reloadedSvm.supportVectors();
-        }).should.throw(/Cannot get support vectors from saved linear model/)
+        }).should.throw(/Cannot get support vectors from saved linear model/);
     });
 
     it('should solve a linearly separable case without whitening', function () {
@@ -56,7 +56,7 @@ describe('SVM', function () {
         svm.predict(features).should.eql(labels);
     });
 
-    it('Some cases are not separable without whitening', function() {
+    it('Some cases are not separable without whitening', function () {
         var features = data.linear2.features;
         var labels = data.linear2.labels;
         var svm = new SVM({
@@ -85,7 +85,7 @@ describe('SVM', function () {
         });
         //var features = data.xor.features;
         var width = 200, height = 200;
-        var features = [[width/4,height/4],[3*width/4, height/4],[3*width/4, 3*height/4],[width/4, 3*height/4]];
+        var features = [[width / 4, height / 4], [3 * width / 4, height / 4], [3 * width / 4, 3 * height / 4], [width / 4, 3 * height / 4]];
         // var labels = data.xor.labels;
         var labels = [-1, 1, -1, 1];
         svm.train(features, labels);
@@ -106,5 +106,5 @@ describe('SVM', function () {
         var model = JSON.parse(JSON.stringify(svm));
         var reloadedSvm = SVM.load(model);
         reloadedSvm.predict(features).should.eql(labels);
-    })
+    });
 });

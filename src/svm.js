@@ -103,27 +103,26 @@ SVM.prototype.train = function (features, labels) {
                 ai = alpha[i];
                 aj = alpha[j];
                 if (labels[i] === labels[j]) {
-                    L = Math.max(0, ai+aj-this.options.C);
-                    H = Math.min(this.options.C, ai+aj);
-                }
-                else  {
-                    L = Math.max(0, aj-ai);
-                    H = Math.min(this.options.C, this.options.C+aj+ai);
+                    L = Math.max(0, ai + aj - this.options.C);
+                    H = Math.min(this.options.C, ai + aj);
+                } else  {
+                    L = Math.max(0, aj - ai);
+                    H = Math.min(this.options.C, this.options.C + aj + ai);
                 }
                 if (Math.abs(L - H) < 1e-4) continue;
 
-                eta = 2*kernel[i][j] - kernel[i][i] - kernel[j][j];
-                if(eta >=0) continue;
+                eta = 2 * kernel[i][j] - kernel[i][i] - kernel[j][j];
+                if (eta >= 0) continue;
                 var newaj = alpha[j] - labels[j] * (Ei - Ej) / eta;
                 if (newaj > H)
                     newaj = H;
                 else if (newaj < L)
                     newaj = L;
-                if(Math.abs(aj - newaj) < 10e-4) continue;
+                if (Math.abs(aj - newaj) < 10e-4) continue;
                 alpha[j] = newaj;
-                alpha[i] = alpha[i] + labels[i]*labels[j]*(aj - newaj);
-                b1 = this.b - Ei - labels[i]*(alpha[i] - ai)*kernel[i][i] - labels[j]*(alpha[j] - aj)*kernel[i][j];
-                b2 = this.b - Ej - labels[i]*(alpha[i] - ai)*kernel[i][j] - labels[j]*(alpha[j] - aj)*kernel[j][j];
+                alpha[i] = alpha[i] + labels[i] * labels[j] * (aj - newaj);
+                b1 = this.b - Ei - labels[i] * (alpha[i] - ai) * kernel[i][i] - labels[j] * (alpha[j] - aj) * kernel[i][j];
+                b2 = this.b - Ej - labels[i] * (alpha[i] - ai) * kernel[i][j] - labels[j] * (alpha[j] - aj) * kernel[j][j];
                 this.b = (b1 + b2) / 2;
                 if (alpha[i] < this.options.C && alpha[i] > 0) this.b = b1;
                 if (alpha[j] < this.options.C && alpha[j] > 0) this.b = b2;
@@ -131,13 +130,13 @@ SVM.prototype.train = function (features, labels) {
             }
         }
         iter++;
-        if (numChange == 0)
+        if (numChange === 0)
             passes += 1;
         else
             passes = 0;
     }
     if (iter === this.options.maxIterations) {
-        console.warn('max iterations reached');
+        throw new Error('max iterations reached');
     }
 
     // Compute the weights (useful for fast decision on new test instances when linear SVM)
@@ -211,7 +210,7 @@ SVM.prototype.predict = function (features) {
  */
 SVM.prototype.marginOne = function (features, noWhitening) {
     // Apply normalization
-    if(this.options.whitening && !noWhitening) {
+    if (this.options.whitening && !noWhitening) {
         features = this._applyWhitening(features);
     }
     var ans = this.b, i;
@@ -301,10 +300,10 @@ SVM.prototype.toJSON = function () {
     return model;
 };
 
-SVM.prototype._applyWhitening = function(features) {
-    if(!this.minMax) throw new Error('Could not apply whitening');
+SVM.prototype._applyWhitening = function (features) {
+    if (!this.minMax) throw new Error('Could not apply whitening');
     var whitened = new Array(features.length);
-    for(var j=0; j<features.length; j++) {
+    for (var j = 0; j < features.length; j++) {
         whitened[j] = (features[j] - this.minMax[j].min) / (this.minMax[j].max - this.minMax[j].min);
     }
     return whitened;
