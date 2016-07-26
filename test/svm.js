@@ -4,8 +4,16 @@ var xsadd = require('ml-xsadd');
 var random = new xsadd(0).random;
 
 var data = {
-    linear: {
-        features: [[0, 0], [1, 1], [1/2,1/4]],
+    linear1: {
+        features: [[0, -200], [400, 600], [200,0]],
+        labels: [-1,1,-1]
+    },
+    linear2: {
+        features: [[0, -200], [1, 600], [1/2,0]],
+        labels: [-1,1,-1]
+    },
+    linear3: {
+        features: [[0, 1], [4, 6], [2,0]],
         labels: [-1,1,-1]
     },
     xor: {
@@ -15,8 +23,8 @@ var data = {
 };
 describe('SVM', function () {
     it('should reload the linear model', function () {
-        var features = [[0, 1], [4, 6], [2,0]];
-        var labels = [-1,1,-1];
+        var features = data.linear3.features;
+        var labels = data.linear3.labels;
         var svm = new SVM({random});
         svm.train(features, labels);
         var exp = JSON.parse(JSON.stringify(svm));
@@ -26,17 +34,44 @@ describe('SVM', function () {
             reloadedSvm.supportVectors();
         }).should.throw(/Cannot get support vectors from saved linear model/)
     });
+
     it('should solve a linearly separable case', function () {
-        var features = data.linear.features;
-        var labels = data.linear.labels;
+        var features = data.linear1.features;
+        var labels = data.linear1.labels;
         var svm = new SVM({random, whitening: true});
         svm.train(features, labels);
         svm.predict(features).should.eql(labels);
         svm.predict(features[0]).should.eql(labels[0]);
-        // Linearly separable case = 1 support vector for each of the two classes
-        //svm.supportVectors().should.eql([features[1], features[2]]);
     });
 
+    it('should solve a linearly separable case without whitening', function () {
+        var features = data.linear3.features;
+        var labels = data.linear3.labels;
+        var svm = new SVM({
+            random,
+            whitening: false
+        });
+        svm.train(features, labels);
+        svm.predict(features).should.eql(labels);
+    });
+
+    it('Some cases are not separable without whitening', function() {
+        var features = data.linear2.features;
+        var labels = data.linear2.labels;
+        var svm = new SVM({
+            random
+        });
+        var svm1 = new SVM({
+            random,
+            whitening: false
+        });
+
+        svm.train(features, labels);
+        svm1.train(features, labels);
+
+        svm.predict(features).should.eql(labels);
+        svm1.predict(features).should.not.eql(labels);
+    });
 
 
     it('should solve xor with rbf', function () {
