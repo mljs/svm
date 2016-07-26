@@ -8,7 +8,10 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --require should --reporter mocha-better-spec-reporter --recursive"
+    "eslint": "eslint src test",
+    "eslint-fix": "npm run eslint -- --fix",
+    "test": "npm run test-mocha && npm run eslint",
+    "test-mocha": "mocha --require should --reporter mocha-better-spec-reporter"
   },
   "repository": {
     "type": "git",
@@ -31,6 +34,9 @@
   },
   "homepage": "https://github.com/mljs/svm",
   "devDependencies": {
+    "eslint": "^3.1.0",
+    "eslint-config-cheminfo": "^1.0.0",
+    "eslint-plugin-no-only-tests": "^1.1.0",
     "ml-xsadd": "^1.0.0",
     "mocha": "latest",
     "mocha-better-spec-reporter": "latest",
