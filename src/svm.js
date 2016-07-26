@@ -122,7 +122,7 @@ SVM.prototype.train = function (features, labels) {
                 if(Math.abs(aj - newaj) < 10e-4) continue;
                 alpha[j] = newaj;
                 alpha[i] = alpha[i] + labels[i]*labels[j]*(aj - newaj);
-                b1 = this.b - Ei - labels[i]*(alpha[i] - ai)*kernel[i][i] - labels[j]*(alpha[j] - aj)*kernel[i][i];
+                b1 = this.b - Ei - labels[i]*(alpha[i] - ai)*kernel[i][i] - labels[j]*(alpha[j] - aj)*kernel[i][j];
                 b2 = this.b - Ej - labels[i]*(alpha[i] - ai)*kernel[i][j] - labels[j]*(alpha[j] - aj)*kernel[j][j];
                 this.b = (b1 + b2) / 2;
                 if (alpha[i] < this.options.C && alpha[i] > 0) this.b = b1;
