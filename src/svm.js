@@ -1,5 +1,6 @@
 'use strict';
 const Kernel = require('ml-kernel');
+const stat = require('ml-stat').array;
 
 var defaultOptions = {
     C: 1,
@@ -8,7 +9,8 @@ var defaultOptions = {
     maxIterations: 10000,
     kernel: 'linear',
     alphaTol: 1e-6,
-    random: Math.random
+    random: Math.random,
+    whitening: true
 };
 
 /**
@@ -37,23 +39,47 @@ function SVM(options) {
  * @param {Array <number>} labels - training data labels in the domain {1,-1}
  */
 SVM.prototype.train = function (features, labels) {
+    if (features.length !== labels.length) {
+        throw new Error('Features and labels should have the same length');
+    }
+    if (features.length < 2) {
+        throw new Error('Cannot train with less than 2 observations');
+    }
     this._trained = false;
     this._loaded = false;
     this.N = labels.length;
     this.D = features[0].length;
-    this.X = features;
+    if (this.options.whitening) {
+        this.X = new Array(this.N);
+        for (var i = 0; i < this.N; i++) {
+            this.X[i] = new Array(this.D);
+        }
+        this.minMax = new Array(this.D);
+        // Apply normalization and keep normalization parameters
+        for (var j = 0; j < this.D; j++) {
+            var d = new Array(this.N);
+            for (i = 0; i < this.N; i++) {
+                d[i] = features[i][j];
+            }
+            this.minMax[j] = stat.minMax(d);
+            for (i = 0; i < this.N; i++) {
+                this.X[i][j] = (features[i][j] - this.minMax[j].min) / (this.minMax[j].max - this.minMax[j].min);
+            }
+        }
+    } else {
+        this.X = features;
+    }
     this.Y = labels;
     this.b = 0;
     this.W = undefined;
 
-    var kernel = this.kernel.compute(features);
+    var kernel = this.kernel.compute(this.X);
     var m = labels.length;
     var alpha = new Array(m).fill(0);
     this.alphas = alpha;
     for (var a = 0; a < m; a++)
         alpha[a] = 0;
-    if (features.length !== m)
-        throw new TypeError('Arrays should have the same length');
+
     var b1 = 0,
         b2 = 0,
         iter = 0,
@@ -68,12 +94,12 @@ SVM.prototype.train = function (features, labels) {
 
     while (passes < this.options.maxPasses && iter < this.options.maxIterations) {
         var numChange = 0;
-        for (var i = 0; i < m; i++) {
-            Ei = this.marginOne(features[i]) - labels[i];
-            if (labels[i]*Ei < -this.options.tol && alpha[i] < this.options.C || labels[i]*Ei > this.options.tol && alpha[i] > 0) {
-                var j = i;
-                while(j===i) j=Math.floor(this.options.random()*m);
-                Ej = this.marginOne(features[j]) - labels[j];
+        for (i = 0; i < m; i++) {
+            Ei = this.marginOne(this.X[i], true) - labels[i];
+            if (labels[i] * Ei < -this.options.tol && alpha[i] < this.options.C || labels[i] * Ei > this.options.tol && alpha[i] > 0) {
+                j = i;
+                while (j === i) j = Math.floor(this.options.random() * m);
+                Ej = this.marginOne(this.X[j], true) - labels[j];
                 ai = alpha[i];
                 aj = alpha[j];
                 if (labels[i] === labels[j]) {
@@ -84,7 +110,7 @@ SVM.prototype.train = function (features, labels) {
                     L = Math.max(0, aj-ai);
                     H = Math.min(this.options.C, this.options.C+aj+ai);
                 }
-                if(Math.abs(L - H) < 1e-4) continue;
+                if (Math.abs(L - H) < 1e-4) continue;
 
                 eta = 2*kernel[i][j] - kernel[i][i] - kernel[j][j];
                 if(eta >=0) continue;
@@ -110,17 +136,17 @@ SVM.prototype.train = function (features, labels) {
         else
             passes = 0;
     }
-    if(iter === this.options.maxIterations) {
+    if (iter === this.options.maxIterations) {
         console.warn('max iterations reached');
     }
 
     // Compute the weights (useful for fast decision on new test instances when linear SVM)
-    if(this.options.kernel === 'linear') {
+    if (this.options.kernel === 'linear') {
         this.W = new Array(this.D);
         for (var r = 0; r < this.D; r++) {
             this.W[r] = 0;
             for (var w = 0; w < m; w++)
-                this.W[r] += labels[w]*alpha[w]*features[w][r];
+                this.W[r] += labels[w] * alpha[w] * this.X[w][r];
         }
     }
 
@@ -132,9 +158,9 @@ SVM.prototype.train = function (features, labels) {
     var nY = [];
     var nAlphas = [];
     this._supportVectorIdx = [];
-    for(i=0; i<this.N; i++) {
-        if(this.alphas[i] > this.options.alphaTol) {
-            nX.push(features[i]);
+    for (i = 0; i < this.N; i++) {
+        if (this.alphas[i] > this.options.alphaTol) {
+            nX.push(this.X[i]);
             nY.push(labels[i]);
             nAlphas.push(this.alphas[i]);
             this._supportVectorIdx.push(i);
@@ -157,7 +183,7 @@ SVM.prototype.train = function (features, labels) {
  * @param p The observation's features.
  * @returns {number} Classification result ({-1,1})
  */
-SVM.prototype.predictOne = function(p) {
+SVM.prototype.predictOne = function (p) {
     var margin = this.marginOne(p);
     return margin > 0 ? 1 : -1;
 };
@@ -169,8 +195,8 @@ SVM.prototype.predictOne = function(p) {
  * is given
  */
 SVM.prototype.predict = function (features) {
-    if(!this._trained && !this._loaded) throw new Error('Cannot predict, you need to train the SVM first');
-    if(Array.isArray(features) && Array.isArray(features[0])) {
+    if (!this._trained && !this._loaded) throw new Error('Cannot predict, you need to train the SVM first');
+    if (Array.isArray(features) && Array.isArray(features[0])) {
         return features.map(this.predictOne.bind(this));
     } else {
         return this.predictOne(features);
@@ -183,15 +209,19 @@ SVM.prototype.predict = function (features) {
  * @param {Array<Number>} features - Features
  * @returns {Number} - The computed margin
  */
-SVM.prototype.marginOne = function(features) {
+SVM.prototype.marginOne = function (features, noWhitening) {
+    // Apply normalization
+    if(this.options.whitening && !noWhitening) {
+        features = this._applyWhitening(features);
+    }
     var ans = this.b, i;
-    if(this.options.kernel === 'linear' && this.W) {
+    if (this.options.kernel === 'linear' && this.W) {
         // Use weights, it's faster
-        for(i=0; i<this.W.length; i++) {
+        for (i = 0; i < this.W.length; i++) {
             ans += this.W[i] * features[i];
         }
     } else {
-        for(i=0; i<this.N; i++) {
+        for (i = 0; i < this.N; i++) {
             ans += this.alphas[i] * this.Y[i] * this.kernel.compute([features], [this.X[i]])[0][0];
         }
     }
@@ -205,8 +235,8 @@ SVM.prototype.marginOne = function(features) {
  * @returns {Number|Array} The computed margin. Is an Array if several observations' features given, or a Number if
  * only one observation's features given
  */
-SVM.prototype.margin = function(features) {
-    if(Array.isArray(features)) {
+SVM.prototype.margin = function (features) {
+    if (Array.isArray(features)) {
         return features.map(this.marginOne.bind(this));
     } else {
         return this.marginOne(features);
@@ -218,9 +248,9 @@ SVM.prototype.margin = function(features) {
  * {@link #SVM.load load} if linear kernel
  * @returns {Array<Array<Number> >} The support vectors in feature space
  */
-SVM.prototype.supportVectors = function() {
-    if(!this._trained && !this._loaded) throw new Error('Cannot get support vectors, you need to train the SVM first');
-    if(this._loaded && this.options.kernel === 'linear') throw new Error('Cannot get support vectors from saved linear model, you need to train the SVM to have them');
+SVM.prototype.supportVectors = function () {
+    if (!this._trained && !this._loaded) throw new Error('Cannot get support vectors, you need to train the SVM first');
+    if (this._loaded && this.options.kernel === 'linear') throw new Error('Cannot get support vectors from saved linear model, you need to train the SVM to have them');
     return this.X;
 };
 
@@ -233,7 +263,7 @@ SVM.load = function (model) {
     this._loaded = true;
     this._trained = false;
     var svm = new SVM(model.options);
-    if(model.options.kernel === 'linear') {
+    if (model.options.kernel === 'linear') {
         svm.W = model.W.slice();
         svm.D = svm.W.length;
     } else {
@@ -243,6 +273,7 @@ SVM.load = function (model) {
         svm.N = svm.X.length;
         svm.D = svm.X[0].length;
     }
+    svm.minMax = model.minMax;
     svm.b = model.b;
     svm._loaded = true;
     svm._trained = false;
@@ -254,11 +285,12 @@ SVM.load = function (model) {
  * @returns {Object} Model object that can be reused with {@link #SVM.load load}
  */
 SVM.prototype.toJSON = function () {
-    if(!this._trained && !this._loaded) throw new Error('Cannot export, you need to train the SVM first');
+    if (!this._trained && !this._loaded) throw new Error('Cannot export, you need to train the SVM first');
     var model = {};
     model.options = Object.assign({}, this.options);
     model.b = this.b;
-    if(model.options.kernel === 'linear') {
+    model.minMax = this.minMax;
+    if (model.options.kernel === 'linear') {
         model.W = this.W.slice();
     } else {
         // Exporting non-linear models is heavier
@@ -267,6 +299,15 @@ SVM.prototype.toJSON = function () {
         model.alphas = this.alphas.slice();
     }
     return model;
+};
+
+SVM.prototype._applyWhitening = function(features) {
+    if(!this.minMax) throw new Error('Could not apply whitening');
+    var whitened = new Array(features.length);
+    for(var j=0; j<features.length; j++) {
+        whitened[j] = (features[j] - this.minMax[j].min) / (this.minMax[j].max - this.minMax[j].min);
+    }
+    return whitened;
 };
 
 module.exports = SVM;

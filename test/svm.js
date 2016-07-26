@@ -5,7 +5,7 @@ var random = new xsadd(0).random;
 
 var data = {
     linear: {
-        features: [[0, -2], [4, 6], [2,0]],
+        features: [[0, 0], [1, 1], [1/2,1/4]],
         labels: [-1,1,-1]
     },
     xor: {
@@ -14,17 +14,6 @@ var data = {
     }
 };
 describe('SVM', function () {
-    it('should solve a linearly separable case', function () {
-        var features = data.linear.features;
-        var labels = data.linear.labels;
-        var svm = new SVM({random});
-        svm.train(features, labels);
-        svm.predict(features).should.eql(labels);
-        svm.predict(features[0]).should.eql(labels[0]);
-        // Linearly separable case = 1 support vector for each of the two classes
-        svm.supportVectors().should.eql([features[1], features[2]]);
-    });
-
     it('should reload the linear model', function () {
         var features = [[0, 1], [4, 6], [2,0]];
         var labels = [-1,1,-1];
@@ -37,17 +26,32 @@ describe('SVM', function () {
             reloadedSvm.supportVectors();
         }).should.throw(/Cannot get support vectors from saved linear model/)
     });
+    it('should solve a linearly separable case', function () {
+        var features = data.linear.features;
+        var labels = data.linear.labels;
+        var svm = new SVM({random, whitening: true});
+        svm.train(features, labels);
+        svm.predict(features).should.eql(labels);
+        svm.predict(features[0]).should.eql(labels[0]);
+        // Linearly separable case = 1 support vector for each of the two classes
+        //svm.supportVectors().should.eql([features[1], features[2]]);
+    });
+
+
 
     it('should solve xor with rbf', function () {
         var svm = new SVM({
             kernel: 'rbf',
             kernelOptions: {
-                sigma: 0.5
+                sigma: 0.1
             },
             random
         });
-        var features = data.xor.features;
-        var labels = data.xor.labels;
+        //var features = data.xor.features;
+        var width = 200, height = 200;
+        var features = [[width/4,height/4],[3*width/4, height/4],[3*width/4, 3*height/4],[width/4, 3*height/4]];
+        // var labels = data.xor.labels;
+        var labels = [-1, 1, -1, 1];
         svm.train(features, labels);
         svm.predict(features).should.eql(labels);
     });
@@ -56,7 +60,7 @@ describe('SVM', function () {
         var svm = new SVM({
             kernel: 'rbf',
             kernelOptions: {
-                sigma: 0.5
+                sigma: 0.1
             },
             random
         });
