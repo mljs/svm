@@ -45,5 +45,9 @@
   "dependencies": {
     "ml-kernel": "^2.2.0",
     "ml-stat": "^1.2.0"
+  },
+  "optionalDependencies": {
+    "ml-cross-validation": "^1.0.1",
+    "ml-dataset-iris": "^1.0.0"
   }
 }

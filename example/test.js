@@ -17,7 +17,6 @@ var labels = [-1, -1, 1, 1];
 
 for(var i=0; i<1000; i++) {
     svm.train(features, labels);
-    // console.log(svm.X);
     svm.predict(features);
 }
 
