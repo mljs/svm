@@ -15,7 +15,9 @@ var labels = [-1, -1, 1, 1];
 // var features = [[0,0],[0,1],[1,1],[1,0]];
 // var labels = [1, -1, 1, -1];
 
-svm.train(features, labels);
-console.log(svm.X);
+for(var i=0; i<1000; i++) {
+    svm.train(features, labels);
+    // console.log(svm.X);
+    svm.predict(features);
+}
 
-console.log(svm.predict(features));

@@ -95,11 +95,11 @@ SVM.prototype.train = function (features, labels) {
     while (passes < this.options.maxPasses && iter < this.options.maxIterations) {
         var numChange = 0;
         for (i = 0; i < m; i++) {
-            Ei = this.marginOne(this.X[i], true) - labels[i];
+            Ei = this._marginOnePrecomputed(i, kernel) - labels[i];
             if (labels[i] * Ei < -this.options.tol && alpha[i] < this.options.C || labels[i] * Ei > this.options.tol && alpha[i] > 0) {
                 j = i;
                 while (j === i) j = Math.floor(this.options.random() * m);
-                Ej = this.marginOne(this.X[j], true) - labels[j];
+                Ej = this._marginOnePrecomputed(j, kernel) - labels[j];
                 ai = alpha[i];
                 aj = alpha[j];
                 if (labels[i] === labels[j]) {
@@ -138,6 +138,8 @@ SVM.prototype.train = function (features, labels) {
     if (iter === this.options.maxIterations) {
         throw new Error('max iterations reached');
     }
+
+    this.iterations = iter;
 
     // Compute the weights (useful for fast decision on new test instances when linear SVM)
     if (this.options.kernel === 'linear') {
@@ -223,6 +225,23 @@ SVM.prototype.marginOne = function (features, noWhitening) {
         for (i = 0; i < this.N; i++) {
             ans += this.alphas[i] * this.Y[i] * this.kernel.compute([features], [this.X[i]])[0][0];
         }
+    }
+    return ans;
+};
+
+
+/**
+ * Get a margin using the precomputed kernel. Much faster than normal margin computation
+ * @private
+ * @param {Number} index - Train data index
+ * @param {Array< Array<Number> >} kernel - The precomputed kernel
+ * @returns {number} Computed margin
+ * @private
+ */
+SVM.prototype._marginOnePrecomputed = function (index, kernel) {
+    var ans = this.b, i;
+    for(i=0; i<this.N; i++) {
+        ans += this.alphas[i] * this.Y[i] * kernel[index][i];
     }
     return ans;
 };
