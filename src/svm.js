@@ -240,7 +240,7 @@ SVM.prototype.marginOne = function (features, noWhitening) {
  */
 SVM.prototype._marginOnePrecomputed = function (index, kernel) {
     var ans = this.b, i;
-    for(i=0; i<this.N; i++) {
+    for (i = 0; i < this.N; i++) {
         ans += this.alphas[i] * this.Y[i] * kernel[index][i];
     }
     return ans;
