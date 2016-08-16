@@ -37,17 +37,15 @@
     "eslint": "^3.1.0",
     "eslint-config-cheminfo": "^1.0.0",
     "eslint-plugin-no-only-tests": "^1.1.0",
+    "ml-cross-validation": "^1.0.1",
+    "ml-dataset-iris": "^1.0.0",
     "ml-xsadd": "^1.0.0",
-    "mocha": "latest",
-    "mocha-better-spec-reporter": "latest",
-    "should": "latest"
+    "mocha": "^3.0.2",
+    "mocha-better-spec-reporter": "^3.0.2",
+    "should": "^11.1.0"
   },
   "dependencies": {
     "ml-kernel": "^2.2.0",
     "ml-stat": "^1.2.0"
-  },
-  "optionalDependencies": {
-    "ml-cross-validation": "^1.0.1",
-    "ml-dataset-iris": "^1.0.0"
   }
 }
