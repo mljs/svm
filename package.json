@@ -35,7 +35,7 @@
   "homepage": "https://github.com/mljs/svm",
   "devDependencies": {
     "eslint": "^3.1.0",
-    "eslint-config-cheminfo": "^1.0.0",
+    "eslint-config-cheminfo": "^1.3.0",
     "eslint-plugin-no-only-tests": "^1.1.0",
     "ml-cross-validation": "^1.0.1",
     "ml-dataset-iris": "^1.0.0",
