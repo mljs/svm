@@ -77,8 +77,9 @@ SVM.prototype.train = function (features, labels) {
     var m = labels.length;
     var alpha = new Array(m).fill(0);
     this.alphas = alpha;
-    for (var a = 0; a < m; a++)
+    for (var a = 0; a < m; a++) {
         alpha[a] = 0;
+    }
 
     var b1 = 0,
         b2 = 0,
@@ -98,7 +99,10 @@ SVM.prototype.train = function (features, labels) {
             Ei = this._marginOnePrecomputed(i, kernel) - labels[i];
             if (labels[i] * Ei < -this.options.tol && alpha[i] < this.options.C || labels[i] * Ei > this.options.tol && alpha[i] > 0) {
                 j = i;
-                while (j === i) j = Math.floor(this.options.random() * m);
+                while (j === i) {
+                    j = Math.floor(this.options.random() * m);
+                }
+
                 Ej = this._marginOnePrecomputed(j, kernel) - labels[j];
                 ai = alpha[i];
                 aj = alpha[j];
@@ -109,31 +113,43 @@ SVM.prototype.train = function (features, labels) {
                     L = Math.max(0, aj - ai);
                     H = Math.min(this.options.C, this.options.C + aj + ai);
                 }
-                if (Math.abs(L - H) < 1e-4) continue;
+                if (Math.abs(L - H) < 1e-4) {
+                    continue;
+                }
 
                 eta = 2 * kernel[i][j] - kernel[i][i] - kernel[j][j];
-                if (eta >= 0) continue;
+                if (eta >= 0) {
+                    continue;
+                }
                 var newaj = alpha[j] - labels[j] * (Ei - Ej) / eta;
-                if (newaj > H)
+                if (newaj > H) {
                     newaj = H;
-                else if (newaj < L)
+                } else if (newaj < L) {
                     newaj = L;
-                if (Math.abs(aj - newaj) < 10e-4) continue;
+                }
+                if (Math.abs(aj - newaj) < 10e-4) {
+                    continue;
+                }
                 alpha[j] = newaj;
                 alpha[i] = alpha[i] + labels[i] * labels[j] * (aj - newaj);
                 b1 = this.b - Ei - labels[i] * (alpha[i] - ai) * kernel[i][i] - labels[j] * (alpha[j] - aj) * kernel[i][j];
                 b2 = this.b - Ej - labels[i] * (alpha[i] - ai) * kernel[i][j] - labels[j] * (alpha[j] - aj) * kernel[j][j];
                 this.b = (b1 + b2) / 2;
-                if (alpha[i] < this.options.C && alpha[i] > 0) this.b = b1;
-                if (alpha[j] < this.options.C && alpha[j] > 0) this.b = b2;
+                if (alpha[i] < this.options.C && alpha[i] > 0) {
+                    this.b = b1;
+                }
+                if (alpha[j] < this.options.C && alpha[j] > 0) {
+                    this.b = b2;
+                }
                 numChange += 1;
             }
         }
         iter++;
-        if (numChange === 0)
+        if (numChange === 0) {
             passes += 1;
-        else
+        } else {
             passes = 0;
+        }
     }
     if (iter === this.options.maxIterations) {
         throw new Error('max iterations reached');
@@ -146,8 +162,9 @@ SVM.prototype.train = function (features, labels) {
         this.W = new Array(this.D);
         for (var r = 0; r < this.D; r++) {
             this.W[r] = 0;
-            for (var w = 0; w < m; w++)
+            for (var w = 0; w < m; w++) {
                 this.W[r] += labels[w] * alpha[w] * this.X[w][r];
+            }
         }
     }
 
@@ -196,7 +213,10 @@ SVM.prototype.predictOne = function (p) {
  * is given
  */
 SVM.prototype.predict = function (features) {
-    if (!this._trained && !this._loaded) throw new Error('Cannot predict, you need to train the SVM first');
+    if (!this._trained && !this._loaded) {
+        throw new Error('Cannot predict, you need to train the SVM first');
+    }
+
     if (Array.isArray(features) && Array.isArray(features[0])) {
         return features.map(this.predictOne.bind(this));
     } else {
@@ -267,8 +287,12 @@ SVM.prototype.margin = function (features) {
  * @returns {Array<Number>} The indices in the training vector of the support vectors
  */
 SVM.prototype.supportVectors = function () {
-    if (!this._trained && !this._loaded) throw new Error('Cannot get support vectors, you need to train the SVM first');
-    if (this._loaded && this.options.kernel === 'linear') throw new Error('Cannot get support vectors from saved linear model, you need to train the SVM to have them');
+    if (!this._trained && !this._loaded) {
+        throw new Error('Cannot get support vectors, you need to train the SVM first');
+    }
+    if (this._loaded && this.options.kernel === 'linear') {
+        throw new Error('Cannot get support vectors from saved linear model, you need to train the SVM to have them');
+    }
     return this._supportVectorIdx;
 };
 
@@ -303,7 +327,10 @@ SVM.load = function (model) {
  * @returns {Object} Model object that can be reused with {@link #SVM.load load}
  */
 SVM.prototype.toJSON = function () {
-    if (!this._trained && !this._loaded) throw new Error('Cannot export, you need to train the SVM first');
+    if (!this._trained && !this._loaded) {
+        throw new Error('Cannot export, you need to train the SVM first');
+    }
+
     var model = {};
     model.options = Object.assign({}, this.options);
     model.b = this.b;
@@ -320,7 +347,10 @@ SVM.prototype.toJSON = function () {
 };
 
 SVM.prototype._applyWhitening = function (features) {
-    if (!this.minMax) throw new Error('Could not apply whitening');
+    if (!this.minMax) {
+        throw new Error('Could not apply whitening');
+    }
+
     var whitened = new Array(features.length);
     for (var j = 0; j < features.length; j++) {
         whitened[j] = (features[j] - this.minMax[j].min) / (this.minMax[j].max - this.minMax[j].min);
