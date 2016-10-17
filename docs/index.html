@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>ml-svm 2.1.1 | Documentation</title>
+  <title>ml-svm 2.1.2 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -14,7 +14,7 @@
       <div class='fixed xs-hide fix-3 overflow-auto max-height-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>ml-svm</h3>
-          <div class='mb1'><code>2.1.1</code></div>
+          <div class='mb1'><code>2.1.2</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -103,7 +103,7 @@
       SVM
     </h3>
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/svm/blob/a5fc959b54df2efc79a7dcc3e802787dbfbc7c04/src/svm.js#L29-L34'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/svm/blob/1cd79353495c02b2dc6f6868ab729c1cf98f6486/src/svm.js#L29-L34'>
       <span>src/svm.js</span>
       </a>
     
@@ -114,7 +114,7 @@
 support vector machines</p>
 
 
-  <div class='pre p1 fill-light mt0'>new SVM(options: {Object})</div>
+  <div class='pre p1 fill-light mt0'>new SVM(options: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>])</div>
 
   
 
@@ -130,7 +130,7 @@ support vector machines</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>options</span> <code class='quiet'>({Object})</code> SVM options
+            <span class='code bold'>options</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>])</code> SVM options
 
           </div>
           
@@ -148,7 +148,7 @@ support vector machines</p>
             <tbody class='mt1'>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.C</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>]</code>
+                  <td class='break-word'><span class='code bold'>options.C</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]</code>
                   
                     (default <code>1</code>)
                   </td>
@@ -157,7 +157,7 @@ support vector machines</p>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.tol</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>]</code>
+                  <td class='break-word'><span class='code bold'>options.tol</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]</code>
                   
                     (default <code>1e-4</code>)
                   </td>
@@ -166,7 +166,7 @@ support vector machines</p>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.alphaTol</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>]</code>
+                  <td class='break-word'><span class='code bold'>options.alphaTol</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]</code>
                   
                     (default <code>1e-6</code>)
                   </td>
@@ -175,7 +175,7 @@ support vector machines</p>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.maxPasses</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>]</code>
+                  <td class='break-word'><span class='code bold'>options.maxPasses</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]</code>
                   
                     (default <code>10</code>)
                   </td>
@@ -184,7 +184,7 @@ support vector machines</p>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.maxIterations</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>]</code>
+                  <td class='break-word'><span class='code bold'>options.maxIterations</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>]</code>
                   
                     (default <code>10000</code>)
                   </td>
@@ -193,7 +193,7 @@ support vector machines</p>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.kernel</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>]</code>
+                  <td class='break-word'><span class='code bold'>options.kernel</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
                   
                     (default <code>linear</code>)
                   </td>
@@ -203,7 +203,7 @@ support vector machines</p>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.random</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>]</code>
+                  <td class='break-word'><span class='code bold'>options.random</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">function</a>]</code>
                   
                     (default <code>Math.random</code>)
                   </td>
@@ -246,7 +246,7 @@ support vector machines</p>
   <p>Create a SVM instance from a saved model</p>
 
 
-  <div class='pre p1 fill-light mt0'>load(model: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="#svm">SVM</a></div>
+  <div class='pre p1 fill-light mt0'>load(model: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>): <a href="#svm">SVM</a></div>
 
   
 
@@ -262,7 +262,7 @@ support vector machines</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>model</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>  Object such as returned by a trained SVM instance with 
+            <span class='code bold'>model</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>  Object such as returned by a trained SVM instance with 
 <a href="#SVM#toJSON">toJSON</a>
 
           </div>
@@ -387,7 +387,7 @@ support vector machines</p>
   <p>Predict the classification outcome of a trained svm given one or several observations&#x27; features.</p>
 
 
-  <div class='pre p1 fill-light mt0'>predict(features: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&gt; | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</div>
+  <div class='pre p1 fill-light mt0'>predict(features: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt; | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
 
   
 
@@ -417,7 +417,7 @@ support vector machines</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&gt; | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>:
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt; | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>:
         An array of {-1, 1} if several observations are given or a number if one observation
 is given
 
@@ -454,7 +454,7 @@ is given
   <p>Returns the margin of one or several observations given its features</p>
 
 
-  <div class='pre p1 fill-light mt0'>margin(features: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&gt;&gt; | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&gt;)): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</div>
+  <div class='pre p1 fill-light mt0'>margin(features: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt; | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;)): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</div>
 
   
 
@@ -470,7 +470,7 @@ is given
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>features</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&gt;&gt; | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&gt;))</code> Features from on or several observations.
+            <span class='code bold'>features</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt; | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;))</code> Features from on or several observations.
 
           </div>
           
@@ -484,8 +484,8 @@ is given
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>:
-        The computed margin. Is an Array if several observations&#x27; features given, or a Number if
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>:
+        The computed margin. Is an Array if several observations&#x27; features given, or a number if
 only one observation&#x27;s features given
 
       
@@ -522,7 +522,7 @@ only one observation&#x27;s features given
 created from <a href="#SVM.load">load</a> if linear kernel</p>
 
 
-  <div class='pre p1 fill-light mt0'>supportVectors(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&gt;</div>
+  <div class='pre p1 fill-light mt0'>supportVectors(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</div>
 
   
 
@@ -539,7 +539,7 @@ created from <a href="#SVM.load">load</a> if linear kernel</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&gt;</code>:
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;</code>:
         The indices in the training vector of the support vectors
 
       
@@ -575,7 +575,7 @@ created from <a href="#SVM.load">load</a> if linear kernel</p>
   <p>Export the minimal object that enables to reload the model</p>
 
 
-  <div class='pre p1 fill-light mt0'>toJSON(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  <div class='pre p1 fill-light mt0'>toJSON(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></div>
 
   
 
@@ -592,7 +592,7 @@ created from <a href="#SVM.load">load</a> if linear kernel</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
         Model object that can be reused with 
 <a href="#SVM.load">load</a>
 
