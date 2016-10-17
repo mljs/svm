@@ -16,14 +16,14 @@ var defaultOptions = {
 /**
  * Simplified version of the Sequential Minimal Optimization algorithm for training
  * support vector machines
- * @param {{Object}} options - SVM options
- * @param {Number} [options.C=1] - regularization parameter
- * @param {Number} [options.tol=1e-4] - numerical tolerance
- * @param {Number} [options.alphaTol=1e-6] - alpha tolerance, threshold to decide support vectors
- * @param {Number} [options.maxPasses=10] - max number of times to iterate over alphas without changing
- * @param {Number} [options.maxIterations=10000] - max number of iterations
- * @param {String} [options.kernel=linear] - the kind of kernel. {@link https://github.com/mljs/kernel/tree/1252de5f9012776e6e0eb06c7b434b8631fb21f0 List of kernels}
- * @param {Function} [options.random=Math.random] - custom random number generator
+ * @param {object} [options] - SVM options
+ * @param {number} [options.C=1] - regularization parameter
+ * @param {number} [options.tol=1e-4] - numerical tolerance
+ * @param {number} [options.alphaTol=1e-6] - alpha tolerance, threshold to decide support vectors
+ * @param {number} [options.maxPasses=10] - max number of times to iterate over alphas without changing
+ * @param {number} [options.maxIterations=10000] - max number of iterations
+ * @param {string} [options.kernel=linear] - the kind of kernel. {@link https://github.com/mljs/kernel/tree/1252de5f9012776e6e0eb06c7b434b8631fb21f0 List of kernels}
+ * @param {function} [options.random=Math.random] - custom random number generator
  * @constructor
  */
 function SVM(options) {
@@ -35,8 +35,8 @@ function SVM(options) {
 
 /**
  * Train the SVM model
- * @param {Array <Array <number>>} features - training data features
- * @param {Array <number>} labels - training data labels in the domain {1,-1}
+ * @param {Array<Array<number>>} features - training data features
+ * @param {Array<number>} labels - training data labels in the domain {1,-1}
  */
 SVM.prototype.train = function (features, labels) {
     if (features.length !== labels.length) {
@@ -198,8 +198,8 @@ SVM.prototype.train = function (features, labels) {
 /**
  * Get prediction ({-1,1}) given one observation's features.
  * @private
- * @param p The observation's features.
- * @returns {number} Classification result ({-1,1})
+ * @param {Array<number>} p The observation's features.
+ * @return {number} Classification result ({-1,1})
  */
 SVM.prototype.predictOne = function (p) {
     var margin = this.marginOne(p);
@@ -209,7 +209,7 @@ SVM.prototype.predictOne = function (p) {
 /**
  * Predict the classification outcome of a trained svm given one or several observations' features.
  * @param {Array} features - The observation(s)' features
- * @returns {Array<Number>|Number} An array of {-1, 1} if several observations are given or a number if one observation
+ * @return {Array<number>|number} An array of {-1, 1} if several observations are given or a number if one observation
  * is given
  */
 SVM.prototype.predict = function (features) {
@@ -227,8 +227,9 @@ SVM.prototype.predict = function (features) {
 /**
  * Get margin given one observation's features
  * @private
- * @param {Array<Number>} features - Features
- * @returns {Number} - The computed margin
+ * @param {Array<number>} features - Features
+ * @param {boolean} [noWhitening=false]
+ * @return {number} - The computed margin
  */
 SVM.prototype.marginOne = function (features, noWhitening) {
     // Apply normalization
@@ -253,9 +254,9 @@ SVM.prototype.marginOne = function (features, noWhitening) {
 /**
  * Get a margin using the precomputed kernel. Much faster than normal margin computation
  * @private
- * @param {Number} index - Train data index
- * @param {Array< Array<Number> >} kernel - The precomputed kernel
- * @returns {number} Computed margin
+ * @param {number} index - Train data index
+ * @param {Array< Array<number> >} kernel - The precomputed kernel
+ * @return {number} Computed margin
  * @private
  */
 SVM.prototype._marginOnePrecomputed = function (index, kernel) {
@@ -269,8 +270,8 @@ SVM.prototype._marginOnePrecomputed = function (index, kernel) {
 
 /**
  * Returns the margin of one or several observations given its features
- * @param {Array <Array<Number> >|Array<Number>} features - Features from on or several observations.
- * @returns {Number|Array} The computed margin. Is an Array if several observations' features given, or a Number if
+ * @param {Array <Array<number> >|Array<number>} features - Features from on or several observations.
+ * @return {number|Array} The computed margin. Is an Array if several observations' features given, or a number if
  * only one observation's features given
  */
 SVM.prototype.margin = function (features) {
@@ -284,7 +285,7 @@ SVM.prototype.margin = function (features) {
 /**
  * Get support vectors indexes of the trained classifier. WARINNG: this method does not work for svm instances
  * created from {@link #SVM.load load} if linear kernel
- * @returns {Array<Number>} The indices in the training vector of the support vectors
+ * @return {Array<number>} The indices in the training vector of the support vectors
  */
 SVM.prototype.supportVectors = function () {
     if (!this._trained && !this._loaded) {
@@ -298,8 +299,8 @@ SVM.prototype.supportVectors = function () {
 
 /**
  * Create a SVM instance from a saved model
- * @param {Object} model -  Object such as returned by a trained SVM instance with {@link #SVM#toJSON toJSON}
- * @returns {SVM} Instance of svm classifier
+ * @param {object} model -  Object such as returned by a trained SVM instance with {@link #SVM#toJSON toJSON}
+ * @return {SVM} Instance of svm classifier
  */
 SVM.load = function (model) {
     this._loaded = true;
@@ -324,7 +325,7 @@ SVM.load = function (model) {
 
 /**
  * Export the minimal object that enables to reload the model
- * @returns {Object} Model object that can be reused with {@link #SVM.load load}
+ * @return {object} Model object that can be reused with {@link #SVM.load load}
  */
 SVM.prototype.toJSON = function () {
     if (!this._trained && !this._loaded) {
