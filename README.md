@@ -7,7 +7,7 @@
   
 Support Vector Machines in Javascript
 
-Implementation of [this Simplified Sequential Minimization algorithm](http://cs229.stanford.edu/materials/smo.pdf)
+Implementation of [this simplified Sequential Minimization Optimization algorithm](http://cs229.stanford.edu/materials/smo.pdf)
 
 ## Installation
 
