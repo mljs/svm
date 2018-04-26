@@ -7,7 +7,7 @@
   
 Support Vector Machines in Javascript
 
-## :warning: This is a simplified implementation of SVM, primarily meant for students to understand the algorithm. For real world applications, please check out [libsvm-js](https://github.com/mljs/libsvm).
+## :warning: :warning: This is a simplified implementation of SVM, primarily meant for students to understand the algorithm. For real world applications, please check out [libsvm-js](https://github.com/mljs/libsvm) :warning: :warning:
 
 Implementation of [this simplified Sequential Minimization Optimization algorithm](http://cs229.stanford.edu/materials/smo.pdf)
 
